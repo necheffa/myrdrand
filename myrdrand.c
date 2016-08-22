@@ -25,9 +25,6 @@ static struct cdev *myrdrand_cdev;
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Alexander Necheff");
 
-/*
- * if return is not ok then do upto 10 itterations to poll rdrand as per Intel
- */
 static int rdrand64_step(u64 *rand) {
     unsigned char ok;
     asm volatile ("rdrand %0; setc %1"
@@ -45,20 +42,11 @@ int myrdrand_release(struct inode *inode, struct file *filp) {
 }
 
 ssize_t myrdrand_read(struct file *filp, char __user *buf, size_t count, loff_t *f_pos) {
-    //TODO: impl
 
     void *rand_buf;
     unsigned long err = 0;
     u64 i = 0;
     u64 size = 0;
-
-    /*
-    if (count <= 8) {
-        size = 1;
-    } else {
-        size = count % 8;
-    }
-    */
 
     if (count % 8) {
         size = count / 8 + 1;
@@ -69,7 +57,6 @@ ssize_t myrdrand_read(struct file *filp, char __user *buf, size_t count, loff_t 
     rand_buf = kmalloc(sizeof(u64) * size, GFP_KERNEL);
     for (i = 0; i < size; i++) {
         int res = rdrand64_step((u64 *)rand_buf + i);
-        //printk(KERN_WARNING "myrdrand: got %llu\n", *((u64 *)rand_buf + i));
     }
 
     err = copy_to_user(buf, rand_buf, count);
