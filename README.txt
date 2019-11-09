@@ -48,3 +48,7 @@ Usage:
   you really shouldn't rely on a single source for randomness the way myrdrand
   does.
 
+Licensing:
+  This code is released under the terms of the GPLv2. See the LICENSING file
+  in this directory for more information.
+
