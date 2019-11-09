@@ -35,7 +35,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <asm/uaccess.h>
 
 static const int COUNT = 1;
-static const int BUF_LEN = 1024;
+static const int BUF_LEN = 8192;
 static const char *VERSION = "v0.3";
 
 static int myrdrand_major;
