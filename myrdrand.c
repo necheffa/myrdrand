@@ -1,8 +1,26 @@
-/**
- * 20160821 - Alexander Necheff
- * myrdrand.c - provide a char dev for full-bandwidth access to the rdrand device
- *
- * WARNING - code for demo only, lacks a lot of safty checks
+/*
+myrdrand provides a character device driver for full-bandwidth access to
+the rdrand instruction set found on modern Intel CPUs.
+Copyright (C) 2016, 2019  Alexander Necheff
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; using version 2
+of the License.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
+
+/*  ChangeLog:
+ *    2016-08-21 - Alexander Necheff - initial version.
+ *    2019-11-09 - Alexander Necheff - added version number, added GPLv2 license
  */
 
 #include <linux/init.h>
@@ -18,11 +36,12 @@
 
 static const int COUNT = 1;
 static const int BUF_LEN = 1024;
+static const char *VERSION = "v0.3";
 
 static int myrdrand_major;
 static struct cdev *myrdrand_cdev;
 
-MODULE_LICENSE("GPL");
+MODULE_LICENSE("GPLv2");
 MODULE_AUTHOR("Alexander Necheff");
 
 static int rdrand64_step(u64 *rand) {
@@ -83,7 +102,7 @@ static int myrdrand_init(void) {
     int res = -ENODEV;
     int err = 0;
 
-    printk(KERN_ALERT "myrdrand is starting up.\n");
+    printk(KERN_ALERT "myrdrand: version %s is starting up.\n", VERSION);
 
     res = alloc_chrdev_region(&dev, 0, COUNT, "myrdrand");
     myrdrand_major = MAJOR(dev);
@@ -104,7 +123,7 @@ static int myrdrand_init(void) {
 }
 
 static void myrdrand_exit(void) {
-    printk(KERN_ALERT "myrdrand is shutting down.\n");
+    printk(KERN_ALERT "myrdrand: version %s is shutting down.\n", VERSION);
 
     unregister_chrdev_region(MKDEV(myrdrand_major, 0), COUNT);
     cdev_del(myrdrand_cdev);
