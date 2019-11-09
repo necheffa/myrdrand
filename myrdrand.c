@@ -44,7 +44,8 @@ static struct cdev *myrdrand_cdev;
 MODULE_LICENSE("GPLv2");
 MODULE_AUTHOR("Alexander Necheff");
 
-static int rdrand64_step(u64 *rand) {
+static int rdrand64_step(u64 *rand)
+{
     unsigned char ok;
     asm volatile ("rdrand %0; setc %1"
             : "=r" (*rand), "=qm" (ok));
@@ -52,15 +53,18 @@ static int rdrand64_step(u64 *rand) {
     return (int) ok;
 }
 
-int myrdrand_open(struct inode *inode, struct file *filp) {
+int myrdrand_open(struct inode *inode, struct file *filp)
+{
     return 0;
 }
 
-int myrdrand_release(struct inode *inode, struct file *filp) {
+int myrdrand_release(struct inode *inode, struct file *filp)
+{
     return 0;
 }
 
-ssize_t myrdrand_read(struct file *filp, char __user *buf, size_t count, loff_t *f_pos) {
+ssize_t myrdrand_read(struct file *filp, char __user *buf, size_t count, loff_t *f_pos)
+{
 
     void *rand_buf;
     unsigned long err = 0;
@@ -96,8 +100,8 @@ struct file_operations myrdrand_fops = {
 };
 
 
-static int myrdrand_init(void) {
-
+static int myrdrand_init(void)
+{
     dev_t dev;
     int res = -ENODEV;
     int err = 0;
@@ -122,7 +126,8 @@ static int myrdrand_init(void) {
     return 0;
 }
 
-static void myrdrand_exit(void) {
+static void myrdrand_exit(void)
+{
     printk(KERN_ALERT "myrdrand: version %s is shutting down.\n", VERSION);
 
     unregister_chrdev_region(MKDEV(myrdrand_major, 0), COUNT);
@@ -131,3 +136,4 @@ static void myrdrand_exit(void) {
 
 module_init(myrdrand_init);
 module_exit(myrdrand_exit);
+
